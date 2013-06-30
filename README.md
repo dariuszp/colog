@@ -101,4 +101,9 @@ colog.log(colog.format('<question>How are you ?</question>', false));
 *All options that can be used as tags:*
 bold, underline, strike, inverse, colorBlack, colorRed, colorGreen, colorYellow, colorBlue, colorMagenta, colorCyan, colorWhite, backgroundBlack, backgroundRed, backgroundGreen, backgroundYellow, backgroundBlue, backgroundMagenta, backgroundCyan, backgroundWhite
 
-&copy; Półtorak Dariusz <poltorak.dariusz@gmail.com>
+##Example output
+
+![Example](https://raw.github.com/dariuszp/colog/master/docs/colog.png)
+
+Author: Półtorak Dariusz <poltorak.dariusz@gmail.com>
+License: [MIT](http://opensource.org/licenses/MIT)
