@@ -1,4 +1,5 @@
 #colog
+v0.1.3
 
 Use colors in your node.js console output
 
