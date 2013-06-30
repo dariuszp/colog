@@ -1,6 +1,6 @@
 {
     "name": "colog",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "author": "Półtorak Dariusz <poltorak.dariusz@gmail.com>",
     "description": "colog - console.log with colors",
     "repository": {
