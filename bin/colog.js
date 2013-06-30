@@ -3,6 +3,15 @@
 var colog = require('../lib/colog');
 
 colog.logo();
+colog.success('Changes in 1.4');
+colog.format('Instead of <colorGreen>T<underline>hi</underline>s</colorGreen> <strike><bold>is</bold></strike> <backgroundRed>SPARTA<inverse>!</inverse></backgroundRed>');
+colog.format('use <green>T<u>hi</u>s</green> <s><b>is</b></s> <bgRed>SPARTA<i>!</i></bgRed>');
+colog.log(colog.red('This is red using colog.red() insead of colog.colorRed()'));
+colog.log(colog.bgGreen('This green background is made by colog.bgGreen() instead of colog.backgroundGreen()'));
+colog.log('And you can use <b></b> instead of <bold></bold> with format function');
+colog.info('Other changes are in wiki');
+colog.log('');
+colog.error('OTHER FEATURES:');
 colog.log('');
 colog.info('Info');
 colog.success('Success');

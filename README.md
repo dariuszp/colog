@@ -1,5 +1,20 @@
 #colog
-v0.1.3
+##v0.1.4
+
+*Changes:*
+Now you can use color names without color prefix. So use
+* colog.red() instead of colog.colorRed()
+* colog.bgGreen() instead of colog.backgroundGreen();
+* colog.b() instead of colog.bold()
+
+Same with format() method:
+```Shell
+Instead of <colorGreen>This</colorGreen> <bold>is</bold> <backgroundRed>SPARTA!</backgroundRed>
+use <green>This</green> <b>is</b> <bgRed>SPARTA!</bgRed>
+```
+
+
+##v0.1.3
 
 Use colors in your node.js console output
 
