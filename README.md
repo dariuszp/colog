@@ -1,5 +1,6 @@
 #colog
 ##v0.1.5
+
 *Changes:*
 Now progress bar is included
 * colog.progress(20) to draw progress bar with twenty bars

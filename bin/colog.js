@@ -53,7 +53,7 @@ colog.log('');
 colog.log('Progress bar');
 colog.log('');
 
-colog.configureProgress(undefined, undefined, undefined, undefined, true, 'PROGRESS: ', [ 'bgGreen' ]);
+colog.configureProgress('-', 'X', undefined, undefined, true, 'PROGRESS: ', [ 'bgGreen' ]);
 
 var i = false;
 colog.progress(20);
