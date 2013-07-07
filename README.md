@@ -1,4 +1,17 @@
 #colog
+##v0.1.5
+*Changes:*
+Now progress bar is included
+* colog.progress(20) to draw progress bar with twenty bars
+* colog.progress(20, 5) to draw progress bar with 5 filled bars and 15 "empty" bars
+* colog.progress(20, 5, ['bgGreen']) to draw progress bar with 5 filled bars and 15 "empty" bars and green background
+* colog.progress() to increase bar value so if you have 5 out of 20, you will have 6 out of 20
+* colog.progress(undefined, undefined, [ 'red' ]) to increase value by 1 and add change text to red
+* colog.configureProgress() to change way progress bar is displayed
+* colog.nl() or colog.newLine() is added. This print new line in console
+* colog.progress() return array with 2 elements, current and max value of progress
+
+
 ##v0.1.4
 
 *Changes:*
