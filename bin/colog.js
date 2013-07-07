@@ -50,4 +50,17 @@ colog.info('So you can get this:');
 colog.format('colog.format(<bold><colorRed>This</colorRed></bold> <underline><colorYellow>is</colorYellow></underline> <colorGreen>SPARTA</colorGreen><inverse>!</inverse>);');
 colog.log('but that one is slower because of multiple use of regexp');
 colog.log('');
-colog.success('THAT IS ALL. HAVE A NICE DAY!');
+colog.log('Progress bar');
+colog.log('');
+
+colog.configureProgress(undefined, undefined, undefined, undefined, true, 'PROGRESS: ', [ 'bgGreen' ]);
+
+var i = false;
+colog.progress(20);
+i = setInterval(function () {
+    var t = colog.progress();
+    if (t[0] === t[1]) {
+        clearInterval(i);
+        colog.success('THAT IS ALL. HAVE A NICE DAY!');
+    }
+}, 200)
