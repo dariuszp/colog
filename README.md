@@ -1,7 +1,18 @@
 #colog
+##v0.1.6
+
+*Changes:*
+
+* colog.dump(variable) added
+* colog.dump(variable, [ "red", "bgGreen" ] to apply effects to dump
+* colog.dump(function () { return 1; }); will display function code as text
+* docs added to methods
+* format now work with multiline strings
+
 ##v0.1.5
 
 *Changes:*
+
 Now progress bar is included
 * colog.progress(20) to draw progress bar with twenty bars
 * colog.progress(20, 5) to draw progress bar with 5 filled bars and 15 "empty" bars
