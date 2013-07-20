@@ -1,4 +1,8 @@
 #colog
+
+##v0.1.7
+License file added. Library is under MIT license but no license file was provided with library. Fixing that.
+
 ##v0.1.6
 
 *Changes:*
