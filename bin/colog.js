@@ -76,9 +76,9 @@ colog.format('\n\n<bgGreen>- DUMPING VARIABLE\n---------------------------------
 
 colog.info('Let say we have variable like this:');
 var variable = {
-    this: 'THIS',
-    is: 'IS',
-    sparta: 'SPARTA!'
+    'this': 'THIS',
+    'is': 'IS',
+    'sparta': 'SPARTA!'
 };
 colog.log(colog.apply("var variable = {\n    this: 'THIS',\n    is: 'IS',\n    sparta: 'SPARTA!'\n};", [ 'yellow' ]));
 
