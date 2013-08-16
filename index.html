@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Colog by dariuszp</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Colog</h1>
+        <p class="header">colog - console.log with colors for Node.js</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/dariuszp/colog/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/dariuszp/colog/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/dariuszp/colog">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/dariuszp">dariuszp</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a name="colog" class="anchor" href="#colog"><span class="octicon octicon-link"></span></a>colog</h1>
+
+<h2>
+<a name="v017" class="anchor" href="#v017"><span class="octicon octicon-link"></span></a>v0.1.7</h2>
+
+<p>License file added. Library is under MIT license but no license file was provided with library. Fixing that.</p>
+
+<h2>
+<a name="v016" class="anchor" href="#v016"><span class="octicon octicon-link"></span></a>v0.1.6</h2>
+
+<p><em>Changes:</em></p>
+
+<ul>
+<li>colog.dump(variable) added</li>
+<li>colog.dump(variable, [ "red", "bgGreen" ] to apply effects to dump</li>
+<li>colog.dump(function () { return 1; }); will display function code as text</li>
+<li>docs added to methods</li>
+<li>format now work with multiline strings</li>
+</ul><h2>
+<a name="v015" class="anchor" href="#v015"><span class="octicon octicon-link"></span></a>v0.1.5</h2>
+
+<p><em>Changes:</em></p>
+
+<p>Now progress bar is included</p>
+
+<ul>
+<li>colog.progress(20) to draw progress bar with twenty bars</li>
+<li>colog.progress(20, 5) to draw progress bar with 5 filled bars and 15 "empty" bars</li>
+<li>colog.progress(20, 5, ['bgGreen']) to draw progress bar with 5 filled bars and 15 "empty" bars and green background</li>
+<li>colog.progress() to increase bar value so if you have 5 out of 20, you will have 6 out of 20</li>
+<li>colog.progress(undefined, undefined, [ 'red' ]) to increase value by 1 and add change text to red</li>
+<li>colog.configureProgress() to change way progress bar is displayed</li>
+<li>colog.nl() or colog.newLine() is added. This print new line in console</li>
+<li>colog.progress() return array with 2 elements, current and max value of progress</li>
+</ul><h2>
+<a name="v014" class="anchor" href="#v014"><span class="octicon octicon-link"></span></a>v0.1.4</h2>
+
+<p><em>Changes:</em>
+Now you can use color names without color prefix. So use</p>
+
+<ul>
+<li>colog.red() instead of colog.colorRed()</li>
+<li>colog.bgGreen() instead of colog.backgroundGreen();</li>
+<li>colog.b() instead of colog.bold()</li>
+</ul><p>Same with format() method:</p>
+
+<pre lang="Shell"><code>Instead of &lt;colorGreen&gt;This&lt;/colorGreen&gt; &lt;bold&gt;is&lt;/bold&gt; &lt;backgroundRed&gt;SPARTA!&lt;/backgroundRed&gt;
+use &lt;green&gt;This&lt;/green&gt; &lt;b&gt;is&lt;/b&gt; &lt;bgRed&gt;SPARTA!&lt;/bgRed&gt;
+</code></pre>
+
+<h2>
+<a name="v013" class="anchor" href="#v013"><span class="octicon octicon-link"></span></a>v0.1.3</h2>
+
+<p>Use colors in your node.js console output</p>
+
+<h3>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>If you have Node.js and npm (Node Package Manager) installed, simply open console and type</p>
+
+<pre lang="Shell"><code>npm install colog
+</code></pre>
+
+<h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>To use colog, add it to your project file</p>
+
+<div class="highlight"><pre><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">colog</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'colog'</span><span class="p">);</span>
+</pre></div>
+
+<p>Then you can start creating colorful output for your console:</p>
+
+<div class="highlight"><pre><span class="nx">colog</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="s1">'Up and running'</span><span class="p">);</span>
+</pre></div>
+
+<p>If you did everything right, after you start your program like this:</p>
+
+<pre lang="Shell"><code>npde myApplication.js
+</code></pre>
+
+<p>You should see green text "Up and running";</p>
+
+<p>For more informations check <a href="https://github.com/dariuszp/colog/wiki">Wiki</a> page for this project</p>
+
+<h2>
+<a name="chatsheet" class="anchor" href="#chatsheet"><span class="octicon octicon-link"></span></a>Chatsheet</h2>
+
+<h4>
+<a name="predefined-options" class="anchor" href="#predefined-options"><span class="octicon octicon-link"></span></a>Predefined options:</h4>
+
+<div class="highlight"><pre><span class="nx">colog</span><span class="p">.</span><span class="nx">question</span><span class="p">(</span><span class="s1">'How are you ?'</span><span class="p">);</span>
+</pre></div>
+
+<p><em>Full list</em></p>
+
+<ul>
+<li>info() - white text</li>
+<li>success() - green text</li>
+<li>warning() - yellow text</li>
+<li>error() - red text</li>
+<li>question() - cyan text</li>
+<li>answer() - magenta text</li>
+<li>headerInfo() - black text, white background</li>
+<li>headerSuccess() - white text, green background</li>
+<li>headerWarning() - black text, yellow background</li>
+<li>headerError() - white text, red background</li>
+<li>headerQuestion() - white text, cyan background</li>
+<li>headerAnswer() - white text, magenta background</li>
+</ul><h4>
+<a name="applying-colors-effects-or-background" class="anchor" href="#applying-colors-effects-or-background"><span class="octicon octicon-link"></span></a>Applying colors, effects or background:</h4>
+
+<div class="highlight"><pre><span class="nx">colog</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">colorGreen</span><span class="p">(</span><span class="s1">'My text'</span><span class="p">));</span>
+<span class="nx">colog</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">backgroundGreen</span><span class="p">(</span><span class="s1">'My text'</span><span class="p">));</span>
+</pre></div>
+
+<p><em>Available options:</em></p>
+
+<ul>
+<li>bold()</li>
+<li>underline()</li>
+<li>strike() (draw line on the text)</li>
+<li>inverse() (change background color with text color and vice versa)</li>
+<li>colorBlack()</li>
+<li>colorRed()</li>
+<li>colorGreen()</li>
+<li>colorYellow()</li>
+<li>colorBlue()</li>
+<li>colorMagenta()</li>
+<li>colorCyan()</li>
+<li>colorWhite()</li>
+<li>backgroundBlack()</li>
+<li>backgroundRed()</li>
+<li>backgroundGreen()</li>
+<li>backgroundYellow()</li>
+<li>backgroundBlue()</li>
+<li>backgroundMagenta()</li>
+<li>backgroundCyan()</li>
+<li>backgroundWhite()</li>
+</ul><h4>
+<a name="combining-multiple-effects" class="anchor" href="#combining-multiple-effects"><span class="octicon octicon-link"></span></a>Combining multiple effects:</h4>
+
+<div class="highlight"><pre><span class="nx">colog</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">underscore</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">colorRed</span><span class="p">(</span><span class="s1">'My text'</span><span class="p">)));</span>
+<span class="nx">colog</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="s1">'My text'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'underscore'</span><span class="p">,</span> <span class="s1">'colorRed'</span><span class="p">]));</span>
+<span class="nx">colog</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">'My text'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">)</span> <span class="o">+</span> <span class="nx">colog</span><span class="p">.</span><span class="nx">color</span><span class="p">(</span><span class="s1">'My text'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">));</span>
+<span class="nx">colog</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s1">'&lt;question&gt;How are you ?&lt;/question&gt;'</span><span class="p">);</span>
+<span class="nx">colog</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s1">'colog.format(&lt;bold&gt;&lt;colorRed&gt;This&lt;/colorRed&gt;&lt;/bold&gt; &lt;underline&gt;&lt;colorYellow&gt;is&lt;/colorYellow&gt;&lt;/underline&gt; &lt;colorGreen&gt;SPARTA&lt;/colorGreen&gt;&lt;inverse&gt;!&lt;/inverse&gt;);'</span><span class="p">);</span>
+<span class="nx">colog</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">colog</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s1">'&lt;question&gt;How are you ?&lt;/question&gt;'</span><span class="p">,</span> <span class="kc">false</span><span class="p">));</span>
+</pre></div>
+
+<p><em>All options that can be used as tags:</em>
+bold, underline, strike, inverse, colorBlack, colorRed, colorGreen, colorYellow, colorBlue, colorMagenta, colorCyan, colorWhite, backgroundBlack, backgroundRed, backgroundGreen, backgroundYellow, backgroundBlue, backgroundMagenta, backgroundCyan, backgroundWhite</p>
+
+<h2>
+<a name="example-output" class="anchor" href="#example-output"><span class="octicon octicon-link"></span></a>Example output</h2>
+
+<p><img src="https://raw.github.com/dariuszp/colog/master/docs/colog.png" alt="Example"></p>
+
+<p>Author: Półtorak Dariusz <a href="mailto:poltorak.dariusz@gmail.com">poltorak.dariusz@gmail.com</a>
+License: <a href="http://opensource.org/licenses/MIT">MIT</a></p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
