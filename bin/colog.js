@@ -1,6 +1,6 @@
 'use strict';
 
-var colog = require('../lib/colog'),
+var colog = require('../src/colog'),
     util = require('util');
 
 colog.logo();

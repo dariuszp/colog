@@ -7,49 +7,49 @@ var util = require('util');
  * @returns {Log}
  * @constructor
  */
-function Log() {
+function Colog() {
 
     /**
      * Always create new object
      */
-    if ((this instanceof Log) === false) {
-        return new Log();
+    if ((this instanceof Colog) === false) {
+        return new Colog();
     }
 
     /**
      * Self
      * @type {*}
      */
-    var self = this;
+    var self                        = this;
 
     /**
      * This is base for all effects. Replace %d [ or use util.format() ] with code number
      * @type {string}
      */
-    var base = '\x1B[%dm';
+    var base                        = '\x1B[%dm';
 
     /**
      * This will reset all numbers
      * @type {number}
      */
-    var reset =         0;
+    var reset                       = 0;
 
     /**
      * Add 60 to color number to bright it out
      * @type {number}
      */
-    var colorLightValueChange =    60;
+    var colorLightValueChange       = 60;
 
     /**
      * Last command executed
      */
-    var lastCommand = 'log';
+    var lastCommand                 = 'log';
 
     /**
      * Last line length
      * @type {number}
      */
-    var lastLineLength = 0;
+    var lastLineLength              = 0;
 
     /**
      * Available colors
@@ -115,10 +115,7 @@ function Log() {
         progress: {
             zero: '░',
             one: '▓',
-            left: '',
-            right: '',
-            showPostfix: true,
-            prefixText: ''
+            len: 40
         }
     };
 
@@ -133,13 +130,10 @@ function Log() {
      * @param prefixText - show prefix text before bar
      * @returns {*}
      */
-    this.configureProgress = function (zero, one, left, right, showPostfix, prefixText, effects) {
+    this.configureProgress = function (zero, one, length, effects) {
         defaults.progress.zero = (zero !== undefined) ? zero : defaults.progress.zero;
         defaults.progress.one = (one !== undefined) ? one : defaults.progress.one;
-        defaults.progress.left = (left !== undefined) ? left : defaults.progress.left;
-        defaults.progress.right = (right !== undefined) ? right : defaults.progress.right;
-        defaults.progress.showPostfix = showPostfix ? true : false;
-        defaults.progress.prefixText = (prefixText !== undefined) ? prefixText : defaults.progress.prefixText;
+        defaults.progress.len = (len !== undefined) ? parseInt(length) : defaults.progress.len;
         progress[2] = (effects instanceof Array) ? effects : progress[2];
 
         return this;
@@ -875,7 +869,9 @@ function Log() {
      * @param log
      * @returns {*}
      */
-    this.format = function (message, log) {
+    this.format = function () {
+        var message = arguments.length > 0 ? arguments[0] : '';
+        message = util.format.apply(util.format, arguments);
         var all = this.getAllEffects(),
             i = 0,
             limit = all.length,
@@ -886,10 +882,6 @@ function Log() {
             message = message.replace(new RegExp(util.format('<%s>([\\s\\S]*?)<\/%s>', all[i], all[i]), 'g'), applyCallback);
         }
 
-
-        if (log === false) {
-            return message;
-        }
         return this.log(message);
     };
 
