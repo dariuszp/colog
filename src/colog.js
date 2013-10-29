@@ -946,4 +946,4 @@ function Colog() {
     this.newLine = this.nl;
 }
 
-module.exports = new Log();
+module.exports = new Colog();
