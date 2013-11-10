@@ -1,5 +1,15 @@
 #colog
 
+##v2.0.0
+*Changes:*
+
+* progress bar rewriten
+* mutliple optimalizations
+* and tests
+* .format() now works like .format() from JavaScript but with colors and stuff so you can use %s and pass parameters
+
+WARNING: in 2.0 progress bar changed, adjust your code if you want to use this version
+
 ##v0.1.7
 License file added. Library is under MIT license but no license file was provided with library. Fixing that.
 

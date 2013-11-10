@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./lib/colog');
+module.exports = require(__dirname + '/src/colog.js');

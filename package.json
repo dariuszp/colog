@@ -1,14 +1,18 @@
 {
     "name": "colog",
-    "version": "0.1.8",
-    "author": "Półtorak Dariusz <poltorak.dariusz@gmail.com>",
-    "description": "colog - console.log with colors",
+    "version": "2.0.0",
+    "description": "colog - console log with colors",
+    "main": "index.js",
+    "scripts": {
+        "test": "nodeunit ./tests/tests.js"
+    },
     "repository": {
         "type": "git",
         "url": "git://github.com/dariuszp/colog.git"
     },
-    "main": "index.js",
-    "bin": "bin/colog.js",
+    "devDependencies": {
+        "nodeunit": "*"
+    },
     "keywords": [
         "cli",
         "console",
@@ -17,5 +21,9 @@
         "color",
         "colog"
     ],
-    "license": "MIT"
+    "author": "Półtorak Dariusz <poltorak.dariusz@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/dariuszp/colog/issues"
+    }
 }
