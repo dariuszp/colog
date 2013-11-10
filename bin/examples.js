@@ -126,6 +126,31 @@ colog.progress();
 
 colog.info(colog.yellow('\nWe just used "-" as empty part of bar, "X" to show full part.\nWe shortened progress bar to 10 bars and applied red color.'));
 
-colog.log('');
+colog.nl();
+
+colog.format('\n\n<bgGreen>- FORMAT\n-----------------------------------------</bgGreen>\n');
+
+colog.info('Colog .format() function that allow to apply multiple effects using XML tags now works like utils.format. So you can do this:');
+colog.headerError('colog.format("My name is <yellow>%s</yellow>, I\'m <red>%d</red> years old", "Dariusz", 26);');
+colog.format("My name is <yellow>%s</yellow>, I\'m <red>%d</red> years old", "Dariusz", 26);
+colog.nl();
+
+colog.format('\n\n<bgGreen>- STATUS\n-----------------------------------------</bgGreen>\n');
+colog.info('Also colog now is in possesion of .status() method that allow to display status on the right side of the console. You can use it like this:');
+colog.headerError("colog.status('Module messages', 'OK', [], ['green']);");
+colog.status('Module messages', 'OK', [], ['green']);
+colog.nl();
+
+colog.headerError("colog.status('Module messages', 'ERROR', ['yellow'], ['red']);");
+colog.status('Module messages', 'ERROR', ['yellow'], ['red']);
+colog.nl();
+
+colog.info('Also you can use complex format:');
+colog.headerError('colog.status("<b>Module</b> <yellow>messages</yellow> status:", "<b>[<green>OK</green>]</b>");');
+colog.status("<b>Module</b> <yellow>messages</yellow> status:", "<b>[<green>OK</green>]</b>");
+colog.nl();
+colog.headerError('colog.status("<b>Module</b> <yellow>messages</yellow> status:", "<b>[<red>ERROR</red>]</b>");');
+colog.status("<b>Module</b> <yellow>messages</yellow> status:", "<b>[<red>ERROR</red>]</b>");
+colog.nl();
 
 colog.headerSuccess('\n  DONE \n  This is all you can get right now with colog.\n  Good luck\n  Półtorak Dariusz <poltorak.dariusz@gmail.com>\n');

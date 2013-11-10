@@ -893,7 +893,9 @@ function Colog() {
         if ((effects instanceof Array) === false) {
             throw new Error('Effects must be an array');
         }
-
+        if (!effects.length) {
+            return message;
+        }
         var i = 0,
             limit = effects.length;
 
@@ -1036,7 +1038,7 @@ function Colog() {
      */
     this.newLine = this.nl;
 
-    this.status = function (text, status) {
+    this.status = function (text, status, textEffects, statusEffects) {
         if (text instanceof Object) {
             text = text.toString();
         }
@@ -1053,6 +1055,12 @@ function Colog() {
 
         text = this.getFormat(text);
         status = this.getFormat(status);
+        if (textEffects instanceof Array) {
+            text = this.apply(text, textEffects);
+        }
+        if (statusEffects instanceof Array) {
+            status = this.apply(status, statusEffects);
+        }
 
         if (emptyLength < 2) {
             emptyLength = 2;
