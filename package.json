@@ -4,7 +4,8 @@
     "description": "colog - console log with colors",
     "main": "index.js",
     "scripts": {
-        "test": "nodeunit ./tests/tests.js"
+        "test": "nodeunit ./tests/tests.js",
+        "example": "node ./bin/examples.js"
     },
     "repository": {
         "type": "git",

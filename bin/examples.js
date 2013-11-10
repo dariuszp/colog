@@ -116,6 +116,12 @@ colog.log('');
 
 colog.progress();
 
+colog.info('\nAnd if you did something complex that is worth 5 steps you can catch up this way:');
+colog.headerError('colog.progress(5)');
+colog.log('');
+
+colog.progress(5);
+
 colog.info('\nSometimes we want to reconfigure our progress bar. We can do that:');
 
 colog.headerError("colog.configureProgress('-', 'X', 10, [ 'red' ]);");

@@ -8,7 +8,20 @@
 * and tests
 * .format() now works like .format() from JavaScript but with colors and stuff so you can use %s and pass parameters
 
+colog.format('My name is %s and I\'m %d', 'Earl', 45);
+
 WARNING: in 2.0 progress bar changed, adjust your code if you want to use this version
+* colog.progress(5000, 10000); - to init bar with 40 bars and values 5000 / 10000. Default is 0 / 100.
+* colog.progress(); - to increase bar by 1;
+* colog.progress(5); - to increase bar by 5;
+
+Status method is added. Takes two arguments. Text for left and right side of the console. Can be formatted just like using .format(). Example:
+
+colog.status('Module <b>message</b>', '<b>[OK]</b>');
+
+[OK] will be displayed at the right side of the window.
+
+Next version will have unit tests and travis support.
 
 ##v0.1.7
 License file added. Library is under MIT license but no license file was provided with library. Fixing that.

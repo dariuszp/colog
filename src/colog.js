@@ -163,12 +163,19 @@ function Colog() {
         // Prepare values
         minOrChange = Math.abs(parseInt(minOrChange, 10));
         max = Math.abs(parseInt(max, 10));
+        if (isNaN(minOrChange)) {
+            minOrChange = 0;
+        }
+        if (isNaN(max)) {
+            max = 0;
+        }
+
         if (max > 0) {
             // create new progress bar
             progress[0] = minOrChange;
             progress[1] = max;
         } else {
-            if (!minOrChange && minOrChange !== 0) {
+            if (minOrChange === 0) {
                 minOrChange = 1;
             }
             // add to current progress bar
