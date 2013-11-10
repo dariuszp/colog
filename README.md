@@ -1,6 +1,6 @@
 #colog
 
-##v2.0.0
+##v0.2.0
 *Changes:*
 
 * progress bar rewriten
@@ -10,7 +10,7 @@
 
 colog.format('My name is %s and I\'m %d', 'Earl', 45);
 
-WARNING: in 2.0 progress bar changed, adjust your code if you want to use this version
+WARNING: in 0.2.0 progress bar changed, adjust your code if you want to use this version
 * colog.progress(5000, 10000); - to init bar with 40 bars and values 5000 / 10000. Default is 0 / 100.
 * colog.progress(); - to increase bar by 1;
 * colog.progress(5); - to increase bar by 5;
