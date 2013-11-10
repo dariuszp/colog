@@ -3,9 +3,6 @@
 var colog = require('../src/colog'),
     util = require('util');
 
-colog.logo();
-
-
 colog.format('\n\n<bgGreen>- BASIC USAGE\n-----------------------------------------</bgGreen>\n');
 
 colog.log('colog.log("message");');
@@ -99,18 +96,19 @@ colog.log('');
 colog.format('\n<u><b>* ATTENTION:</b> <yellow>Dump ignore white spaces in strings like \\n. Also dump turn functions into string and print them.</yellow></u>');
 
 colog.format('\n\n<bgGreen>- PROGRESS BAR\n-----------------------------------------</bgGreen>\n');
+colog.format('\n<u><b>* ATTENTION:</b> <yellow>Since version 2.x colog break backward compatibility. Progress bar has been rewritten!</yellow></u>');
 
 colog.info('To create progress bar with 20 bars simply use:');
-colog.headerError('colog.progress(20);');
+colog.headerError('colog.progress(0, 20);');
 colog.info('This will create progress bar like this:\n');
 
-colog.progress(20);
+colog.progress(0, 20);
 
 colog.info('\nIf you want to create progress bar with let say 5 bars filled, do it like this:');
-colog.headerError('colog.progress(20, 5);');
+colog.headerError('colog.progress(5, 20);');
 colog.log('');
 
-colog.progress(20, 5);
+colog.progress(5, 20);
 
 colog.info('\nIt is easy to loose track of last value of progress bar in complex program\nso just execute this to increase bar:');
 colog.headerError('colog.progress()');
@@ -120,23 +118,14 @@ colog.progress();
 
 colog.info('\nSometimes we want to reconfigure our progress bar. We can do that:');
 
-colog.headerError("colog.configureProgress('-', 'X', '<', '>', false, 'PROGRESS: ', [ 'red' ]);");
+colog.headerError("colog.configureProgress('-', 'X', 10, [ 'red' ]);");
 colog.log('');
 
-colog.configureProgress('-', 'X', '<', '>', false, 'PROGRESS:', [ 'red' ]);
+colog.configureProgress('-', 'X', 10, [ 'red' ]);
 colog.progress();
 
-colog.info(colog.yellow('\nWe just used "-" as empty part of bar, "X" to show full part.\nWe added < and > at both side of bar.\nWe decided to not show (7 of 20) at the end.\nWe added "PROGRESS:" prefix AND red color'));
+colog.info(colog.yellow('\nWe just used "-" as empty part of bar, "X" to show full part.\nWe shortened progress bar to 10 bars and applied red color.'));
 
 colog.log('');
 
 colog.headerSuccess('\n  DONE \n  This is all you can get right now with colog.\n  Good luck\n  Półtorak Dariusz <poltorak.dariusz@gmail.com>\n');
-//var i = false;
-//colog.progress(20);
-//i = setInterval(function () {
-//    var t = colog.progress();
-//    if (t[0] === t[1]) {
-//        clearInterval(i);
-//        colog.success('THAT IS ALL. HAVE A NICE DAY!');
-//    }
-//}, 200)

@@ -46,12 +46,6 @@ function Colog() {
     var lastCommand                 = 'log';
 
     /**
-     * Last line length
-     * @type {number}
-     */
-    var lastLineLength              = 0;
-
-    /**
      * Available colors
      * @type {{black: Array, red: Array, green: Array, yellow: Array, blue: Array, magenta: Array, cyan: Array, white: Array}}
      */
@@ -102,10 +96,8 @@ function Colog() {
      */
     var progress = [
         0,
-        0,
-        []
+        100
     ];
-
 
     /**
      * Default progress bar values
@@ -115,9 +107,19 @@ function Colog() {
         progress: {
             zero: '░',
             one: '▓',
-            len: 40
+            length: 40,
+            sufix: ' ~ %d%% (%s / %s)',
+            effects: ['colorYellow']
         }
     };
+
+    var consoleWidth    = 40;
+    if (process.stdout.isTTY) {
+        consoleWidth = process.stdout.getWindowSize()[0];
+        process.stdout.on('resize', function() {
+            consoleWidth = process.stdout.getWindowSize()[0];
+        });
+    }
 
 
     /**
@@ -131,10 +133,91 @@ function Colog() {
      * @returns {*}
      */
     this.configureProgress = function (zero, one, length, effects) {
+        length = Math.abs(parseInt(length, 10));
+
         defaults.progress.zero = (zero !== undefined) ? zero : defaults.progress.zero;
         defaults.progress.one = (one !== undefined) ? one : defaults.progress.one;
-        defaults.progress.len = (len !== undefined) ? parseInt(length) : defaults.progress.len;
-        progress[2] = (effects instanceof Array) ? effects : progress[2];
+        defaults.progress.length = (length > 0) ? length : defaults.progress.length;
+        defaults.progress.effects = (effects instanceof Array) ? effects : defaults.progress.effects;
+
+        return this;
+    };
+
+
+    /**
+     * Generate progress bar. Don't pass arguments to increase progress bar value
+     * @param int - each int will add one more progress bar
+     */
+    this.progress = function (minOrChange, max, effects, drawNew) {
+        if (lastCommand === 'progress') {
+            clearLine();
+        }
+        lastCommand = 'progress';
+
+        var i = 0,
+            prc = 0,
+            fullBarsToDraw = 0,
+            emptyBarsToDraw = 0,
+            totalBars = defaults.progress.length;
+
+        // Prepare values
+        minOrChange = Math.abs(parseInt(minOrChange, 10));
+        max = Math.abs(parseInt(max, 10));
+        if (max > 0) {
+            // create new progress bar
+            progress[0] = minOrChange;
+            progress[1] = max;
+        } else {
+            if (!minOrChange && minOrChange !== 0) {
+                minOrChange = 1;
+            }
+            // add to current progress bar
+            progress[0] += minOrChange;
+        }
+
+        minOrChange     = progress[0];
+        max             = progress[1];
+        if (minOrChange > max) {
+            minOrChange = max;
+        }
+
+        if (max === 0) {
+            prc = 100;
+        } else {
+            prc = Math.floor((minOrChange/max) * 100);
+        }
+        fullBarsToDraw = Math.floor((prc / 100) * totalBars);
+        emptyBarsToDraw = totalBars - fullBarsToDraw;
+
+        var str = '\r';
+        if (drawNew) {
+            if (lastCommand === 'progress') {
+                str = '\n';
+            }
+        } else {
+            str = '\r';
+            for (i = 1; i < consoleWidth; i++) {
+                str = str + ' ';
+            }
+            process.stdout.write(str);
+        }
+
+        str = '\r';
+        for (i = 0; i < fullBarsToDraw; i++) {
+            str = str + defaults.progress.one;
+        }
+        for (i = 0; i < emptyBarsToDraw; i++) {
+            str = str + defaults.progress.zero;
+        }
+        str = str + this.getFormat(defaults.progress.sufix, prc, minOrChange, max);
+
+        if (effects instanceof Array) {
+            str = this.apply(str, effects);
+        } else {
+            str = this.apply(str, defaults.progress.effects);
+        }
+
+        process.stdout.write(str);
 
         return this;
     };
@@ -194,6 +277,7 @@ function Colog() {
         return text(message, effect.bold);
     };
 
+
     /**
      * Apply underline to text
      * @param message
@@ -203,6 +287,7 @@ function Colog() {
         return text(message, effect.underline);
     };
 
+
     /**
      * Draw line on the text
      * @param message
@@ -211,6 +296,7 @@ function Colog() {
     this.strike = function (message) {
         return text(message, effect.strike);
     };
+
 
     /**
      * Switch foreground and background colors
@@ -231,6 +317,7 @@ function Colog() {
         return text(message, effect.bold);
     };
 
+
     /**
      * Short alias for underline
      * @param message
@@ -240,6 +327,7 @@ function Colog() {
         return text(message, effect.underline);
     };
 
+
     /**
      * Short alias for strike
      * @param message
@@ -248,6 +336,7 @@ function Colog() {
     this.s = function (message) {
         return text(message, effect.strike);
     };
+
 
     /**
      * Short alias for inverse
@@ -292,6 +381,7 @@ function Colog() {
         return text(message, color.black, light);
     };
 
+
     /**
      * Apply red color
      * @param message
@@ -301,6 +391,7 @@ function Colog() {
     this.red = function (message, light) {
         return text(message, color.red, light);
     };
+
 
     /**
      * Apply green color
@@ -312,6 +403,7 @@ function Colog() {
         return text(message, color.green, light);
     };
 
+
     /**
      * Apply yellow color
      * @param message
@@ -321,6 +413,7 @@ function Colog() {
     this.yellow = function (message, light) {
         return text(message, color.yellow, light);
     };
+
 
     /**
      * Apply blue color
@@ -332,6 +425,7 @@ function Colog() {
         return text(message, color.blue, light);
     };
 
+
     /**
      * Apply magenta color
      * @param message
@@ -341,6 +435,7 @@ function Colog() {
     this.magenta = function (message, light) {
         return text(message, color.magenta, light);
     };
+
 
     /**
      * Apply cyan color
@@ -352,6 +447,7 @@ function Colog() {
         return text(message, color.cyan, light);
     };
 
+
     /**
      * Apply white color
      * @param message
@@ -361,6 +457,7 @@ function Colog() {
     this.white = function (message, light) {
         return text(message, color.white, light);
     };
+
 
     /**
      * Apply black color
@@ -372,6 +469,7 @@ function Colog() {
         return text(message, color.black, light);
     };
 
+
     /**
      * Apply red color
      * @param message
@@ -381,6 +479,7 @@ function Colog() {
     this.colorRed = function (message, light) {
         return text(message, color.red, light);
     };
+
 
     /**
      * Apply green color
@@ -392,6 +491,7 @@ function Colog() {
         return text(message, color.green, light);
     };
 
+
     /**
      * Apply yellow color
      * @param message
@@ -401,6 +501,7 @@ function Colog() {
     this.colorYellow = function (message, light) {
         return text(message, color.yellow, light);
     };
+
 
     /**
      * Apply blue color
@@ -412,6 +513,7 @@ function Colog() {
         return text(message, color.blue, light);
     };
 
+
     /**
      * Apply magenta color
      * @param message
@@ -422,6 +524,7 @@ function Colog() {
         return text(message, color.magenta, light);
     };
 
+
     /**
      * Apply cyan color
      * @param message
@@ -431,6 +534,7 @@ function Colog() {
     this.colorCyan = function (message, light) {
         return text(message, color.cyan, light);
     };
+
 
     /**
      * Apply white color
@@ -465,6 +569,7 @@ function Colog() {
         return text(message, background[name], light);
     };
 
+
     /**
      * Apply black background
      * @param message
@@ -474,6 +579,7 @@ function Colog() {
     this.backgroundBlack = function (message, light) {
         return text(message, background.black, light);
     };
+
 
     /**
      * Apply red background
@@ -485,6 +591,7 @@ function Colog() {
         return text(message, background.red, light);
     };
 
+
     /**
      * Apply green background
      * @param message
@@ -494,6 +601,7 @@ function Colog() {
     this.backgroundGreen = function (message, light) {
         return text(message, background.green, light);
     };
+
 
     /**
      * Apply yellow background
@@ -505,6 +613,7 @@ function Colog() {
         return text(message, background.yellow, light);
     };
 
+
     /**
      * Apply blue background
      * @param message
@@ -514,6 +623,7 @@ function Colog() {
     this.backgroundBlue = function (message, light) {
         return text(message, background.blue, light);
     };
+
 
     /**
      * Apply magenta background
@@ -525,6 +635,7 @@ function Colog() {
         return text(message, background.magenta, light);
     };
 
+
     /**
      * Apply cyan background
      * @param message
@@ -534,6 +645,7 @@ function Colog() {
     this.backgroundCyan = function (message, light) {
         return text(message, background.cyan, light);
     };
+
 
     /**
      * Apply white background
@@ -545,6 +657,7 @@ function Colog() {
         return text(message, background.white, light);
     };
 
+
     /**
      * Apply black background
      * @param message
@@ -554,6 +667,7 @@ function Colog() {
     this.bgBlack = function (message, light) {
         return text(message, background.black, light);
     };
+
 
     /**
      * Apply red background
@@ -565,6 +679,7 @@ function Colog() {
         return text(message, background.red, light);
     };
 
+
     /**
      * Apply green background
      * @param message
@@ -574,6 +689,7 @@ function Colog() {
     this.bgGreen = function (message, light) {
         return text(message, background.green, light);
     };
+
 
     /**
      * Apply yellow background
@@ -585,6 +701,7 @@ function Colog() {
         return text(message, background.yellow, light);
     };
 
+
     /**
      * Apply blue background
      * @param message
@@ -594,6 +711,7 @@ function Colog() {
     this.bgBlue = function (message, light) {
         return text(message, background.blue, light);
     };
+
 
     /**
      * Apply magenta background
@@ -605,6 +723,7 @@ function Colog() {
         return text(message, background.magenta, light);
     };
 
+
     /**
      * Apply cyan background
      * @param message
@@ -614,6 +733,7 @@ function Colog() {
     this.bgCyan = function (message, light) {
         return text(message, background.cyan, light);
     };
+
 
     /**
      * Apply white background
@@ -636,13 +756,12 @@ function Colog() {
         if (lastCommand === 'progress') {
             message = '\n' + message;
         }
-
         lastCommand = 'log';
-        lastLineLength = (message instanceof Object && message.length) ? message.length : 0;
 
         console.log(message);
         return this;
     };
+
 
     /**
      * Log with bold white text
@@ -653,6 +772,7 @@ function Colog() {
         return this.log(this.apply(message, ['bold', 'white']));
     };
 
+
     /**
      * Log with bold green text
      * @param message
@@ -661,6 +781,7 @@ function Colog() {
     this.success = function (message) {
         return this.log(this.apply(message, ['bold', 'green']));
     };
+
 
     /**
      * Log with bold yellow text
@@ -671,6 +792,7 @@ function Colog() {
         return this.log(this.apply(message, ['bold', 'yellow']));
     };
 
+
     /**
      * Log with bold red text
      * @param message
@@ -679,6 +801,7 @@ function Colog() {
     this.error = function (message) {
         return this.log(this.apply(message, ['bold', 'red']));
     };
+
 
     /**
      * Log with bold cyan text
@@ -689,6 +812,7 @@ function Colog() {
         return this.log(this.apply(message, ['bold', 'cyan']));
     };
 
+
     /**
      * Log with bold magenta text
      * @param message
@@ -697,6 +821,7 @@ function Colog() {
     this.answer = function (message) {
         return this.log(this.apply(message, ['bold', 'magenta']));
     };
+
 
     /**
      * Log with bold black text and white background
@@ -707,6 +832,7 @@ function Colog() {
         return this.log(this.apply(message, ['bold', 'black', 'bgWhite']));
     };
 
+
     /**
      * Log with bold white text and green background
      * @param message
@@ -715,6 +841,7 @@ function Colog() {
     this.headerSuccess = function (message) {
         return this.log(this.apply(message, ['bold', 'white', 'bgGreen']));
     };
+
 
     /**
      * Log with bold black text and yellow background
@@ -725,6 +852,7 @@ function Colog() {
         return this.log(this.apply(message, ['bold', 'black', 'bgYellow']));
     };
 
+
     /**
      * Log with bold white text and red background
      * @param message
@@ -733,6 +861,7 @@ function Colog() {
     this.headerError = function (message) {
         return this.log(this.apply(message, ['bold', 'white', 'bgRed']));
     };
+
 
     /**
      * Log with bold white text and cyan background
@@ -743,6 +872,7 @@ function Colog() {
         return this.log(this.apply(message, ['bold', 'white', 'bgCyan']));
     };
 
+
     /**
      * Log with bold white text and magenta background
      * @param message
@@ -751,6 +881,7 @@ function Colog() {
     this.headerAnswer = function (message) {
         return this.log(this.apply(message, ['bold', 'white', 'bgMagenta']));
     };
+
 
     /**
      * Apply effects to message
@@ -785,6 +916,7 @@ function Colog() {
         return message;
     };
 
+
     /**
      * Alias for console.log that allow you to apply effects to dump
      * @param variable
@@ -805,6 +937,7 @@ function Colog() {
         return this;
     };
 
+
     /**
      * Get list of available effects
      * @returns {Array}
@@ -822,46 +955,6 @@ function Colog() {
         return allEffects;
     };
 
-    /**
-     * Split text and apply random effects for each character
-     * @param text
-     * @param amount - amount of effects for character
-     * @returns {string}
-     */
-    this.veryRandomText = function (text, amount) {
-        amount = parseInt(amount, 10);
-        if (!amount) {
-            amount = 1;
-        }
-
-        var allEffects = this.getAllEffects();
-        var len = text.length,
-            i = 0,
-            j = 0,
-            eLen = allEffects.length,
-            newText = '',
-            rand = 'bold',
-            c = '';
-
-        for (i = 0; i < len; i++) {
-            c = text[i];
-            for (j = 0; j < amount; j++) {
-                rand = Math.floor(Math.random() * eLen);
-                c = this[allEffects[rand]](c);
-            }
-            newText += c;
-        }
-
-        return newText;
-    };
-
-    /**
-     * This print logo with my name
-     * @returns {*}
-     */
-    this.logo = function () {
-        return this.format(util.format('\n<bgGreen> ╔════════════════════════╗ \n ║                        ║ \n ║  </bgGreen>                    <bgGreen>  ║ \n ║  </bgGreen>  %s  <bgGreen>  ║ \n ║  </bgGreen>                    <bgGreen>  ║ \n ║                        ║ \n ╚════════════════════════╝ </bgGreen>', this.veryRandomText('Półtorak Dariusz', 3)));
-    };
 
     /**
      * Log message with xml tags using effects name. For example <b>text</b>
@@ -882,53 +975,50 @@ function Colog() {
             message = message.replace(new RegExp(util.format('<%s>([\\s\\S]*?)<\/%s>', all[i], all[i]), 'g'), applyCallback);
         }
 
-        return this.log(message);
+        this.log(message);
+        return this;
     };
+
 
     /**
-     * Generate progress bar. Don't pass arguments to increase progress bar value
-     * @param int - each int will add one more progress bar
+     * Log message with xml tags using effects name. For example <b>text</b>
+     * @param message
+     * @param log
+     * @returns {*}
      */
-    this.progress = function (length, current, effects) {
-        if (lastCommand === 'progress') {
-            clearLine();
-        }
-        lastCommand = 'progress';
-
-        if (parseInt(length, 10) > 0) {
-            current = parseInt(current, 10);
-            progress = [current > 0 ? current : 0, parseInt(length, 10), (effects instanceof Array) ? effects : progress[2]];
-        } else {
-            if (progress[0] !== undefined) {
-                progress[0]++;
-            }
+    this.getFormat = function () {
+        var message = arguments.length > 0 ? arguments[0] : '';
+        message = util.format.apply(util.format, arguments);
+        var all = this.getAllEffects(),
+            i = 0,
+            limit = all.length,
+            applyCallback = function (match, content) {
+                return self.apply(content, [all[i]]);
+            };
+        for (i = 0; i < limit; i++) {
+            message = message.replace(new RegExp(util.format('<%s>([\\s\\S]*?)<\/%s>', all[i], all[i]), 'g'), applyCallback);
         }
 
-        var str = '\r' + (defaults.progress.prefixText ? defaults.progress.prefixText + ' ' : '') + defaults.progress.left,
-            i = progress[0];
-        for (i = 0; i < progress[0]; i++) {
-            str += defaults.progress.one;
-        }
-        for (i = progress[0]; i < progress[1]; i++) {
-            str += defaults.progress.zero;
-        }
-        str += defaults.progress.right + ((defaults.progress.showPostfix) ? ' (' + progress[0] + ' of ' + progress[1] + ') ' : '');
-
-        if (effects instanceof Array) {
-            progress[2] = effects;
-            str = this.apply(str, effects);
-        } else if (progress[2].length > 0) {
-            str = this.apply(str, progress[2]);
-        }
-        lastLineLength = str.length;
-
-        process.stdout.write(str);
-
-        return [
-            progress[0],
-            progress[1]
-        ];
+        return message;
     };
+
+
+    this.stripFormat = function () {
+        var message = arguments.length > 0 ? arguments[0] : '';
+        message = util.format.apply(util.format, arguments);
+        var all = this.getAllEffects(),
+            i = 0,
+            limit = all.length,
+            applyCallback = function (match, content) {
+                return content;
+            };
+        for (i = 0; i < limit; i++) {
+            message = message.replace(new RegExp(util.format('<%s>([\\s\\S]*?)<\/%s>', all[i], all[i]), 'g'), applyCallback);
+        }
+
+        return message;
+    }
+
 
     /**
      * Print new line
@@ -939,11 +1029,45 @@ function Colog() {
         return this;
     };
 
+
     /**
      * Alias for nl
      * @type {*}
      */
     this.newLine = this.nl;
+
+    this.status = function (text, status) {
+        if (text instanceof Object) {
+            text = text.toString();
+        }
+        if (status instanceof Object) {
+            status = status.toString();
+        }
+
+        var textLen = this.stripFormat(text).length,
+            statusLen = this.stripFormat(status).length,
+            emptyLength = consoleWidth - (textLen + statusLen),
+            emptyString = '',
+            i = 0,
+            str = '';
+
+        text = this.getFormat(text);
+        status = this.getFormat(status);
+
+        if (emptyLength < 2) {
+            emptyLength = 2;
+        }
+        emptyLength -= 1;
+
+        for (i = 0; i < emptyLength; i++) {
+            emptyString = emptyString + ' ';
+        }
+
+        str = text + emptyString + status;
+
+        this.log(str);
+        return this;
+    }
 }
 
 module.exports = new Colog();
