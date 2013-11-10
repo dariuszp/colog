@@ -23,6 +23,8 @@ colog.status('Module <b>message</b>', '<b>[OK]</b>');
 
 Next version will have unit tests and travis support.
 
+*run "npm run-script example"* for more info and examples.
+
 ##v0.1.7
 License file added. Library is under MIT license but no license file was provided with library. Fixing that.
 
