@@ -99,7 +99,7 @@ colog.success('Up and running');
 If you did everything right, after you start your program like this:
 
 ```Shell
-npde myApplication.js
+node myApplication.js
 ```
 
 You should see green text "Up and running";
