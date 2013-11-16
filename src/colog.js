@@ -1,6 +1,7 @@
 'use strict';
 
-var util = require('util');
+var util = require('util'),
+    colog;
 
 /**
  * Colorful console logging
@@ -18,7 +19,7 @@ function Colog() {
 
     /**
      * Self
-     * @type {*}
+     * @type Colog
      */
     var self                        = this;
 
@@ -29,7 +30,7 @@ function Colog() {
     var base                        = '\x1B[%dm';
 
     /**
-     * This will reset all numbers
+     * This will reset all effects
      * @type {number}
      */
     var reset                       = 0;
@@ -44,6 +45,12 @@ function Colog() {
      * Last command executed
      */
     var lastCommand                 = 'log';
+
+    /**
+     * Last line printed in console
+     * @type {number}
+     */
+    var lastLineLength              = 0;
 
     /**
      * Available colors
@@ -109,7 +116,8 @@ function Colog() {
             one: '▓',
             length: 40,
             sufix: ' ~ %d%% (%s / %s)',
-            effects: ['colorYellow']
+            effects: ['colorYellow'],
+            description: ''
         }
     };
 
@@ -120,6 +128,50 @@ function Colog() {
             consoleWidth = process.stdout.getWindowSize()[0];
         });
     }
+
+
+    /**
+     * Create effect from code. For colors set lightColor true to bright them up
+     * @param code
+     * @param lightColor
+     * @returns {*}
+     */
+    function use(code, lightColor) {
+        return util.format(base, (lightColor === true) ? code + colorLightValueChange : code);
+    }
+
+
+    /**
+     * Apply effect on both side of the string
+     * @param message
+     * @param effect
+     * @param lightColor
+     * @returns {string}
+     */
+    function text(message, effect, lightColor) {
+        return [
+            use(effect[0], lightColor),
+            message,
+            use(effect[1], lightColor)
+        ].join('');
+    }
+
+
+    /**
+     * Clear line until last new line white character
+     */
+    function clearLine() {
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        lastLineLength = 0;
+
+        return this;
+    }
+
+
+    this.getWidth = function() {
+        return consoleWidth;
+    };
 
 
     /**
@@ -144,15 +196,22 @@ function Colog() {
     };
 
 
+    this.setProgressDescription = function (text) {
+        text += '';
+        defaults.progress.description = text;
+
+        return this;
+    }
+
+
     /**
      * Generate progress bar. Don't pass arguments to increase progress bar value
      * @param int - each int will add one more progress bar
      */
-    this.progress = function (minOrChange, max, effects, drawNew) {
+    this.progress = function (minOrChange, max, effects, returnString) {
         if (lastCommand === 'progress') {
             clearLine();
         }
-        lastCommand = 'progress';
 
         var i = 0,
             prc = 0,
@@ -197,19 +256,11 @@ function Colog() {
         emptyBarsToDraw = totalBars - fullBarsToDraw;
 
         var str = '\r';
-        if (drawNew) {
-            if (lastCommand === 'progress') {
-                str = '\n';
-            }
-        } else {
-            str = '\r';
-            for (i = 1; i < consoleWidth; i++) {
-                str = str + ' ';
-            }
-            process.stdout.write(str);
+
+        if (returnString !== true) {
+            clearLine();
         }
 
-        str = '\r';
         for (i = 0; i < fullBarsToDraw; i++) {
             str = str + defaults.progress.one;
         }
@@ -224,46 +275,22 @@ function Colog() {
             str = this.apply(str, defaults.progress.effects);
         }
 
-        process.stdout.write(str);
+        if (defaults.progress.description.length) {
+            str = str + ' ' + this.format(defaults.progress.description);
+        }
+
+        //str = str.substr(0, consoleWidth);
+
+        if (returnString === true) {
+            lastCommand = 'progress';
+            return str;
+        }
+
+        this.write(str);
+        lastCommand = 'progress';
 
         return this;
     };
-
-
-    /**
-     * Create effect from code. For colors set lightColor true to bright them up
-     * @param code
-     * @param lightColor
-     * @returns {*}
-     */
-    function use(code, lightColor) {
-        return util.format(base, (lightColor === true) ? code + colorLightValueChange : code);
-    }
-
-
-    /**
-     * Apply effect on both side of the string
-     * @param message
-     * @param effect
-     * @param lightColor
-     * @returns {string}
-     */
-    function text(message, effect, lightColor) {
-        return [
-            use(effect[0], lightColor),
-            message,
-            use(effect[1], lightColor)
-        ].join('');
-    }
-
-
-    /**
-     * Clear line until last new line white character
-     */
-    function clearLine() {
-        process.stdout.clearLine();
-        process.stdout.cursorTo(0);
-    }
 
 
     /**
@@ -272,46 +299,6 @@ function Colog() {
      */
     this.reset = function () {
         return use(reset);
-    };
-
-
-    /**
-     * Make given text bold
-     * @param message
-     * @returns {string}
-     */
-    this.bold = function (message) {
-        return text(message, effect.bold);
-    };
-
-
-    /**
-     * Apply underline to text
-     * @param message
-     * @returns {string}
-     */
-    this.underline = function (message) {
-        return text(message, effect.underline);
-    };
-
-
-    /**
-     * Draw line on the text
-     * @param message
-     * @returns {string}
-     */
-    this.strike = function (message) {
-        return text(message, effect.strike);
-    };
-
-
-    /**
-     * Switch foreground and background colors
-     * @param message
-     * @returns {string}
-     */
-    this.inverse = function (message) {
-        return text(message, effect.inverse);
     };
 
 
@@ -352,6 +339,46 @@ function Colog() {
      */
     this.i = function (message) {
         return text(message, effect.inverse);
+    };
+
+
+    /**
+     * Make given text bold
+     * @param message
+     * @returns {string}
+     */
+    this.bold = function (message) {
+        return this.b(message);
+    };
+
+
+    /**
+     * Apply underline to text
+     * @param message
+     * @returns {string}
+     */
+    this.underline = function (message) {
+        return this.u(message);
+    };
+
+
+    /**
+     * Draw line on the text
+     * @param message
+     * @returns {string}
+     */
+    this.strike = function (message) {
+        return this.s(message);
+    };
+
+
+    /**
+     * Switch foreground and background colors
+     * @param message
+     * @returns {string}
+     */
+    this.inverse = function (message) {
+        return this.i(message);
     };
 
 
@@ -473,7 +500,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorBlack = function (message, light) {
-        return text(message, color.black, light);
+        return this.black(message, light);
     };
 
 
@@ -484,7 +511,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorRed = function (message, light) {
-        return text(message, color.red, light);
+        return this.red(message, light);
     };
 
 
@@ -495,7 +522,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorGreen = function (message, light) {
-        return text(message, color.green, light);
+        return this.green(message, light);
     };
 
 
@@ -506,7 +533,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorYellow = function (message, light) {
-        return text(message, color.yellow, light);
+        return this.yellow(message, light);
     };
 
 
@@ -517,7 +544,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorBlue = function (message, light) {
-        return text(message, color.blue, light);
+        return this.blue(message, light);
     };
 
 
@@ -528,7 +555,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorMagenta = function (message, light) {
-        return text(message, color.magenta, light);
+        return this.magenta(message, light);
     };
 
 
@@ -539,7 +566,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorCyan = function (message, light) {
-        return text(message, color.cyan, light);
+        return this.cyan(message, light);
     };
 
 
@@ -550,7 +577,7 @@ function Colog() {
      * @returns {string}
      */
     this.colorWhite = function (message, light) {
-        return text(message, color.white, light);
+        return this.white(message, light);
     };
 
 
@@ -574,94 +601,6 @@ function Colog() {
             throw new Error('Undefined color. Use: ' + backgrounds.join(', '));
         }
         return text(message, background[name], light);
-    };
-
-
-    /**
-     * Apply black background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundBlack = function (message, light) {
-        return text(message, background.black, light);
-    };
-
-
-    /**
-     * Apply red background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundRed = function (message, light) {
-        return text(message, background.red, light);
-    };
-
-
-    /**
-     * Apply green background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundGreen = function (message, light) {
-        return text(message, background.green, light);
-    };
-
-
-    /**
-     * Apply yellow background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundYellow = function (message, light) {
-        return text(message, background.yellow, light);
-    };
-
-
-    /**
-     * Apply blue background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundBlue = function (message, light) {
-        return text(message, background.blue, light);
-    };
-
-
-    /**
-     * Apply magenta background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundMagenta = function (message, light) {
-        return text(message, background.magenta, light);
-    };
-
-
-    /**
-     * Apply cyan background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundCyan = function (message, light) {
-        return text(message, background.cyan, light);
-    };
-
-
-    /**
-     * Apply white background
-     * @param message
-     * @param light
-     * @returns {string}
-     */
-    this.backgroundWhite = function (message, light) {
-        return text(message, background.white, light);
     };
 
 
@@ -754,18 +693,129 @@ function Colog() {
 
 
     /**
+     * Apply black background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundBlack = function (message, light) {
+        return this.bgBlack(message, light);
+    };
+
+
+    /**
+     * Apply red background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundRed = function (message, light) {
+        return this.bgRed(message, light);
+    };
+
+
+    /**
+     * Apply green background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundGreen = function (message, light) {
+        return this.bgGreen(message, light);
+    };
+
+
+    /**
+     * Apply yellow background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundYellow = function (message, light) {
+        return this.bgYellow(message, light);
+    };
+
+
+    /**
+     * Apply blue background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundBlue = function (message, light) {
+        return this.bgBlue(message, light);
+    };
+
+
+    /**
+     * Apply magenta background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundMagenta = function (message, light) {
+        return this.bgMagenta(message, light);
+    };
+
+
+    /**
+     * Apply cyan background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundCyan = function (message, light) {
+        return this.bgCyan(message, light);
+    };
+
+
+    /**
+     * Apply white background
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.backgroundWhite = function (message, light) {
+        return this.bgWhite(message, light);
+    };
+
+
+    /**
      * Alias for console.log
      * @param message
      * @param light
      * @returns {string}
      */
     this.log = function (message) {
-        if (lastCommand === 'progress') {
-            message = '\n' + message;
+        if (lastCommand === 'progress' || lastCommand === 'write') {
+            this.write('\n');
         }
         lastCommand = 'log';
-
         console.log(message);
+        message += '';
+        lastLineLength = message.length;
+
+        return this;
+    };
+
+
+    /**
+     * Write to stdout
+     * @param message
+     * @param light
+     * @returns {string}
+     */
+    this.write = function (message) {
+        lastCommand = 'write';
+        process.stdout.write(message);
+
+        message += '';
+        if (lastCommand === 'write') {
+            lastLineLength += message.length;
+        } else {
+            lastLineLength = message.length;
+        }
+
         return this;
     };
 
@@ -775,8 +825,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.info = function (message) {
-        return this.log(this.apply(message, ['bold', 'white']));
+    this.info = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'white']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -785,8 +836,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.success = function (message) {
-        return this.log(this.apply(message, ['bold', 'green']));
+    this.success = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'green']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -795,8 +847,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.warning = function (message) {
-        return this.log(this.apply(message, ['bold', 'yellow']));
+    this.warning = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'yellow']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -805,8 +858,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.error = function (message) {
-        return this.log(this.apply(message, ['bold', 'red']));
+    this.error = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'red']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -815,8 +869,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.question = function (message) {
-        return this.log(this.apply(message, ['bold', 'cyan']));
+    this.question = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'cyan']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -825,8 +880,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.answer = function (message) {
-        return this.log(this.apply(message, ['bold', 'magenta']));
+    this.answer = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'magenta']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -835,8 +891,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.headerInfo = function (message) {
-        return this.log(this.apply(message, ['bold', 'black', 'bgWhite']));
+    this.headerInfo = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'black', 'bgWhite']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -845,8 +902,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.headerSuccess = function (message) {
-        return this.log(this.apply(message, ['bold', 'white', 'bgGreen']));
+    this.headerSuccess = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'white', 'bgGreen']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -855,8 +913,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.headerWarning = function (message) {
-        return this.log(this.apply(message, ['bold', 'black', 'bgYellow']));
+    this.headerWarning = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'black', 'bgYellow']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -865,8 +924,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.headerError = function (message) {
-        return this.log(this.apply(message, ['bold', 'white', 'bgRed']));
+    this.headerError = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'white', 'bgRed']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -875,8 +935,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.headerQuestion = function (message) {
-        return this.log(this.apply(message, ['bold', 'white', 'bgCyan']));
+    this.headerQuestion = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'white', 'bgCyan']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -885,8 +946,9 @@ function Colog() {
      * @param message
      * @returns {string}
      */
-    this.headerAnswer = function (message) {
-        return this.log(this.apply(message, ['bold', 'white', 'bgMagenta']));
+    this.headerAnswer = function (message, returnString) {
+        var str = this.apply(message, ['bold', 'white', 'bgMagenta']);
+        return returnString === true ? str : this.log(str);
     };
 
 
@@ -939,9 +1001,9 @@ function Colog() {
 
         effects = this.apply('\n', effects);
         effects = effects.split('\n');
-        process.stdout.write(effects[0]);
-        process.stdout.write(util.inspect((typeof variable === 'function') ? variable.toString() : variable));
-        process.stdout.write(effects[1] + '\n');
+        this.write(effects[0]);
+        this.write(util.inspect((typeof variable === 'function') ? variable.toString() : variable));
+        this.write(effects[1] + '\n');
 
         return this;
     };
@@ -972,19 +1034,7 @@ function Colog() {
      * @returns {*}
      */
     this.format = function () {
-        var message = arguments.length > 0 ? arguments[0] : '';
-        message = util.format.apply(util.format, arguments);
-        var all = this.getAllEffects(),
-            i = 0,
-            limit = all.length,
-            applyCallback = function (match, content) {
-                return self.apply(content, [all[i]]);
-            };
-        for (i = 0; i < limit; i++) {
-            message = message.replace(new RegExp(util.format('<%s>([\\s\\S]*?)<\/%s>', all[i], all[i]), 'g'), applyCallback);
-        }
-
-        this.log(message);
+        this.log(this.getFormat.apply(this.getFormat, arguments));
         return this;
     };
 
@@ -998,7 +1048,7 @@ function Colog() {
     this.getFormat = function () {
         var message = arguments.length > 0 ? arguments[0] : '';
         message = util.format.apply(util.format, arguments);
-        var all = this.getAllEffects(),
+        var all = self.getAllEffects(),
             i = 0,
             limit = all.length,
             applyCallback = function (match, content) {
@@ -1034,7 +1084,7 @@ function Colog() {
      * @returns {*}
      */
     this.nl = function () {
-        console.log('');
+        this.write('\n');
         return this;
     };
 
@@ -1045,7 +1095,8 @@ function Colog() {
      */
     this.newLine = this.nl;
 
-    this.status = function (text, status, textEffects, statusEffects) {
+
+    this.status = function (text, status, textEffects, statusEffects, returnString) {
         if (text instanceof Object) {
             text = text.toString();
         }
@@ -1080,9 +1131,16 @@ function Colog() {
 
         str = text + emptyString + status;
 
+        if (returnString === true) {
+            return str;
+        }
         this.log(str);
         return this;
     }
 }
 
-module.exports = new Colog();
+if (!colog) {
+    colog = new Colog();
+}
+
+module.exports = colog;
