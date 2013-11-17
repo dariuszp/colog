@@ -76,6 +76,7 @@ exports.backgroundsAndAliases = function(test){
 
     test.strictEqual(colog.bgGreen('text'),        '\x1B[42mtext\x1B[49m');
     test.strictEqual(colog.backgroundGreen('text'),   '\x1B[42mtext\x1B[49m');
+    test.strictEqual(colog.background('text', 'green'),   '\x1B[42mtext\x1B[49m');
     test.strictEqual(colog.bgGreen('text', true),        '\x1B[102mtext\x1B[109m');
     test.strictEqual(colog.backgroundGreen('text', true),   '\x1B[102mtext\x1B[109m');
 
@@ -145,3 +146,19 @@ exports.progress = function (test) {
 
     test.done();
 };
+
+exports.format = function (test) {
+    var str = colog.getFormat('<black>text</black>');
+    test.strictEqual(str, '\x1B[30mtext\x1B[39m');
+
+    str = colog.getFormat('<b><black>text</black></b>');
+    test.strictEqual(str, '\x1B[1m\x1B[30mtext\x1B[39m\x1B[22m');
+
+    str = colog.getFormat('</b></black>text<black></b>');
+    test.strictEqual(str, '</b></black>text<black></b>');
+
+    str = colog.stripFormat('<b><black>text</black></b>');
+    test.strictEqual(str, 'text');
+
+    test.done();
+}
