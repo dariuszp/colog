@@ -276,7 +276,7 @@ function Colog() {
         }
 
         if (defaults.progress.description.length) {
-            str = str + ' ' + this.format(defaults.progress.description);
+            str = str + ' ' + this.getFormat(defaults.progress.description);
         }
 
         //str = str.substr(0, consoleWidth);

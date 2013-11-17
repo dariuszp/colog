@@ -4,43 +4,59 @@ var colog = require(__dirname + '/../src/colog.js');
 
 exports.colorsAndAliases = function(test){
     test.strictEqual(colog.black('text'),        '\x1B[30mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'black'),        '\x1B[30mtext\x1B[39m');
     test.strictEqual(colog.colorBlack('text'),   '\x1B[30mtext\x1B[39m');
     test.strictEqual(colog.black('text', true),        '\x1B[90mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'black', true),        '\x1B[90mtext\x1B[99m');
     test.strictEqual(colog.colorBlack('text', true),   '\x1B[90mtext\x1B[99m');
 
     test.strictEqual(colog.red('text'),        '\x1B[31mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'red'),        '\x1B[31mtext\x1B[39m');
     test.strictEqual(colog.colorRed('text'),   '\x1B[31mtext\x1B[39m');
     test.strictEqual(colog.red('text', true),        '\x1B[91mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'red', true),        '\x1B[91mtext\x1B[99m');
     test.strictEqual(colog.colorRed('text', true),   '\x1B[91mtext\x1B[99m');
 
     test.strictEqual(colog.green('text'),        '\x1B[32mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'green'),        '\x1B[32mtext\x1B[39m');
     test.strictEqual(colog.colorGreen('text'),   '\x1B[32mtext\x1B[39m');
     test.strictEqual(colog.green('text', true),        '\x1B[92mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'green', true),        '\x1B[92mtext\x1B[99m');
     test.strictEqual(colog.colorGreen('text', true),   '\x1B[92mtext\x1B[99m');
 
     test.strictEqual(colog.yellow('text'),        '\x1B[33mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'yellow'),        '\x1B[33mtext\x1B[39m');
     test.strictEqual(colog.colorYellow('text'),   '\x1B[33mtext\x1B[39m');
     test.strictEqual(colog.yellow('text', true),        '\x1B[93mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'yellow', true),        '\x1B[93mtext\x1B[99m');
     test.strictEqual(colog.colorYellow('text', true),   '\x1B[93mtext\x1B[99m');
 
     test.strictEqual(colog.blue('text'),        '\x1B[34mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'blue'),        '\x1B[34mtext\x1B[39m');
     test.strictEqual(colog.colorBlue('text'),   '\x1B[34mtext\x1B[39m');
     test.strictEqual(colog.blue('text', true),        '\x1B[94mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'blue', true),        '\x1B[94mtext\x1B[99m');
     test.strictEqual(colog.colorBlue('text', true),   '\x1B[94mtext\x1B[99m');
 
     test.strictEqual(colog.magenta('text'),        '\x1B[35mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'magenta'),        '\x1B[35mtext\x1B[39m');
     test.strictEqual(colog.colorMagenta('text'),   '\x1B[35mtext\x1B[39m');
     test.strictEqual(colog.magenta('text', true),        '\x1B[95mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'magenta', true),        '\x1B[95mtext\x1B[99m');
     test.strictEqual(colog.colorMagenta('text', true),   '\x1B[95mtext\x1B[99m');
 
     test.strictEqual(colog.cyan('text'),        '\x1B[36mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'cyan'),        '\x1B[36mtext\x1B[39m');
     test.strictEqual(colog.colorCyan('text'),   '\x1B[36mtext\x1B[39m');
     test.strictEqual(colog.cyan('text', true),        '\x1B[96mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'cyan', true),        '\x1B[96mtext\x1B[99m');
     test.strictEqual(colog.colorCyan('text', true),   '\x1B[96mtext\x1B[99m');
 
     test.strictEqual(colog.white('text'),        '\x1B[37mtext\x1B[39m');
+    test.strictEqual(colog.color('text', 'white'),        '\x1B[37mtext\x1B[39m');
     test.strictEqual(colog.colorWhite('text'),   '\x1B[37mtext\x1B[39m');
     test.strictEqual(colog.white('text', true),        '\x1B[97mtext\x1B[99m');
+    test.strictEqual(colog.color('text', 'white', true),        '\x1B[97mtext\x1B[99m');
     test.strictEqual(colog.colorWhite('text', true),   '\x1B[97mtext\x1B[99m');
 
     test.done();
@@ -105,6 +121,27 @@ exports.textEffects = function(test){
 
     test.strictEqual(colog.s('text'),        '\x1B[9mtext\x1B[29m');
     test.strictEqual(colog.strike('text'),        '\x1B[9mtext\x1B[29m');
+
+    test.done();
+};
+
+
+exports.progress = function (test) {
+    var str = '';
+
+    str = colog.progress(0, 10, [], true);
+    test.strictEqual(str, '\r░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ~ 0% (0 / 10)');
+
+    str = colog.progress(1, 10, [], true);
+    test.strictEqual(str, '\r▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ~ 10% (1 / 10)');
+
+    colog.configureProgress('░', '▓', 10, []);
+    str = colog.progress(1, 10, [], true);
+    test.strictEqual(str, '\r▓░░░░░░░░░ ~ 10% (1 / 10)');
+
+    colog.setProgressDescription('Module1')
+    str = colog.progress(2, 10, [], true);
+    test.strictEqual(str, '\r▓▓░░░░░░░░ ~ 20% (2 / 10) Module1');
 
     test.done();
 };
