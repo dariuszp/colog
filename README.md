@@ -1,4 +1,4 @@
-#colog
+#colog [![Build Status](https://travis-ci.org/dariuszp/colog.png?branch=1.0.0)](https://travis-ci.org/dariuszp/colog)
 
 ##v1.0.0
 
