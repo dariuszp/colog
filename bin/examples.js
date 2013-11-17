@@ -64,7 +64,7 @@ colog.format('\n\n<bgGreen>- APPLYING MULTIPLE EFFECTS\n------------------------
 
 colog.log(colog.green(colog.bgWhite('colog.log(colog.green(colog.bgWhite("message")));')));
 colog.log(colog.apply('colog.log(colog.apply("message", [ "white", "bgRed" ]));', [ 'white', 'bgRed' ]));
-colog.log(colog.bgYellow('colog.format("<b>Bold</b> <red>red</red> <b><green>bold and green</green></b>");') + ' to get ' + colog.format('"<b>Bold</b> <red>red</red> <b><green>bold and green</green></b>"', false));
+colog.log(colog.bgYellow('colog.format("<b>Bold</b> <red>red</red> <b><green>bold and green</green></b>");') + ' to get ' + colog.getFormat('"<b>Bold</b> <red>red</red> <b><green>bold and green</green></b>"'));
 
 colog.format(util.format('\n<u><b>* ATTENTION:</b> All available effects: <yellow>%s</yellow></u>', colog.getAllEffects().join(', ')));
 
