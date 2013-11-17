@@ -124,7 +124,7 @@ function Colog() {
     var consoleWidth    = 40;
     if (process.stdout.isTTY) {
         consoleWidth = process.stdout.getWindowSize()[0];
-        process.stdout.on('resize', function() {
+        process.stdout.on('resize', function () {
             consoleWidth = process.stdout.getWindowSize()[0];
         });
     }
@@ -161,15 +161,24 @@ function Colog() {
      * Clear line until last new line white character
      */
     function clearLine() {
-        process.stdout.clearLine();
-        process.stdout.cursorTo(0);
+        if (process.stdout.clearLine) {
+            process.stdout.clearLine();
+            process.stdout.cursorTo(0);
+        } else {
+            var str = '\r',
+                i = 0;
+            for (i = 0; i < lastLineLength; i++) {
+                str += ' ';
+            }
+            process.stdout.write(str);
+        }
         lastLineLength = 0;
 
-        return this;
+        return self;
     }
 
 
-    this.getWidth = function() {
+    this.getWidth = function () {
         return consoleWidth;
     };
 
@@ -201,7 +210,7 @@ function Colog() {
         defaults.progress.description = text;
 
         return this;
-    }
+    };
 
 
     /**
@@ -250,7 +259,7 @@ function Colog() {
         if (max === 0) {
             prc = 100;
         } else {
-            prc = Math.floor((minOrChange/max) * 100);
+            prc = Math.floor((minOrChange / max) * 100);
         }
         fullBarsToDraw = Math.floor((prc / 100) * totalBars);
         emptyBarsToDraw = totalBars - fullBarsToDraw;
@@ -1065,6 +1074,7 @@ function Colog() {
     this.stripFormat = function () {
         var message = arguments.length > 0 ? arguments[0] : '';
         message = util.format.apply(util.format, arguments);
+
         var all = this.getAllEffects(),
             i = 0,
             limit = all.length,
@@ -1076,7 +1086,7 @@ function Colog() {
         }
 
         return message;
-    }
+    };
 
 
     /**
@@ -1136,7 +1146,7 @@ function Colog() {
         }
         this.log(str);
         return this;
-    }
+    };
 }
 
 if (!colog) {
