@@ -121,6 +121,8 @@ function Colog() {
         }
     };
 
+    var beSilent = false;
+
     var consoleWidth    = 40;
     if (process.stdout.isTTY) {
         consoleWidth = process.stdout.getWindowSize()[0];
@@ -151,7 +153,7 @@ function Colog() {
     function text(message, effect, lightColor) {
         return [
             use(effect[0], lightColor),
-            message,
+            String(message),
             use(effect[1], lightColor)
         ].join('');
     }
@@ -175,6 +177,11 @@ function Colog() {
         lastLineLength = 0;
 
         return self;
+    }
+
+
+    this.silent = function (isSilent) {
+        beSilent = (isSilent) ? true : false;
     }
 
 
@@ -206,7 +213,7 @@ function Colog() {
 
 
     this.setProgressDescription = function (text) {
-        text += '';
+        text = String(text);
         defaults.progress.description = text;
 
         return this;
@@ -218,6 +225,9 @@ function Colog() {
      * @param int - each int will add one more progress bar
      */
     this.progress = function (minOrChange, max, effects, returnString) {
+        if (beSilent) {
+            return this;
+        }
         if (lastCommand === 'progress') {
             clearLine();
         }
@@ -796,6 +806,9 @@ function Colog() {
      * @returns {string}
      */
     this.log = function (message) {
+        if (beSilent) {
+            return this;
+        }
         if (lastCommand === 'progress' || lastCommand === 'write') {
             this.write('\n');
         }
@@ -815,10 +828,13 @@ function Colog() {
      * @returns {string}
      */
     this.write = function (message) {
+        if (beSilent) {
+            return this;
+        }
         lastCommand = 'write';
         process.stdout.write(message);
 
-        message += '';
+        message = String(message);
         if (lastCommand === 'write') {
             lastLineLength += message.length;
         } else {
@@ -1004,6 +1020,9 @@ function Colog() {
      * @returns {*}
      */
     this.dump = function (variable, effects) {
+        if (beSilent) {
+            return this;
+        }
         if (!(effects instanceof Array)) {
             effects = [];
         }
@@ -1043,6 +1062,9 @@ function Colog() {
      * @returns {*}
      */
     this.format = function () {
+        if (beSilent) {
+            return this;
+        }
         this.log(this.getFormat.apply(this.getFormat, arguments));
         return this;
     };
@@ -1107,6 +1129,9 @@ function Colog() {
 
 
     this.status = function (text, status, textEffects, statusEffects, returnString) {
+        if (beSilent) {
+            return this;
+        }
         if (text instanceof Object) {
             text = text.toString();
         }
