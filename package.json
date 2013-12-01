@@ -1,6 +1,6 @@
 {
     "name": "colog",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "colog - console log with colors",
     "main": "index.js",
     "scripts": {

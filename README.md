@@ -5,6 +5,15 @@
 * colog should work also outside tty
 * clear line return colog object
 
+##v1.0.2
+
+* Silence mode for colog.
+
+Silence mode
+```JavaScript
+colog.silent(true); // colog will not print anything to stdout. From this point you should use console.log() or something else.
+colog.silent(false); // default mode
+```
 
 ##v1.0.0
 
