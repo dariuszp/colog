@@ -123,7 +123,7 @@ function Colog() {
 
     var beSilent = false;
 
-    var consoleWidth    = 40;
+    var consoleWidth    = 100;
     if (process.stdout.isTTY) {
         consoleWidth = process.stdout.getWindowSize()[0];
         process.stdout.on('resize', function () {

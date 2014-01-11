@@ -1,5 +1,9 @@
 #colog [![Build Status](https://travis-ci.org/dariuszp/colog.png?branch=1.0.0)](https://travis-ci.org/dariuszp/colog)
 
+##v1.0.3
+
+default console width when not in tty changed from 40 to 100
+
 ##v1.0.2
 
 * Silence mode for colog.
@@ -9,7 +13,6 @@ Silence mode
 colog.silent(true); // colog will not print anything to stdout. From this point you should use console.log() or something else.
 colog.silent(false); // default mode
 ```
-
 
 ##v1.0.1
 
