@@ -1,102 +1,5 @@
 #colog [![Build Status](https://travis-ci.org/dariuszp/colog.png?branch=1.0.0)](https://travis-ci.org/dariuszp/colog)
 
-##v1.0.3
-
-default console width when not in tty changed from 40 to 100
-
-##v1.0.2
-
-* Silence mode for colog.
-
-Silence mode
-```JavaScript
-colog.silent(true); // colog will not print anything to stdout. From this point you should use console.log() or something else.
-colog.silent(false); // default mode
-```
-
-##v1.0.1
-
-* colog should work also outside tty
-* clear line return colog object
-
-##v1.0.0
-
-*Changes:*
-
-* tests in progress
-* code improvements
-
-*Changes:*
-
-* progress bar rewriten
-* mutliple optimalizations
-* and tests
-* .format() now works like .format() from JavaScript but with colors and stuff so you can use %s and pass parameters
-
-colog.format('My name is %s and I\'m %d', 'Earl', 45);
-
-WARNING: in 0.2.0 progress bar changed, adjust your code if you want to use this version
-* colog.progress(5000, 10000); - to init bar with 40 bars and values 5000 / 10000. Default is 0 / 100.
-* colog.progress(); - to increase bar by 1;
-* colog.progress(5); - to increase bar by 5;
-
-Status method is added. Takes two arguments. Text for left and right side of the console. Can be formatted just like using .format(). Example:
-
-colog.status('Module <b>message</b>', '<b>[OK]</b>');
-
-[OK] will be displayed at the right side of the window.
-
-Next version will have unit tests and travis support.
-
-*run "npm run-script example"* for more info and examples.
-
-##v0.1.7
-License file added. Library is under MIT license but no license file was provided with library. Fixing that.
-
-##v0.1.6
-
-*Changes:*
-
-* colog.dump(variable) added
-* colog.dump(variable, [ "red", "bgGreen" ] to apply effects to dump
-* colog.dump(function () { return 1; }); will display function code as text
-* docs added to methods
-* format now work with multiline strings
-
-##v0.1.5
-
-*Changes:*
-
-Now progress bar is included
-* colog.progress(20) to draw progress bar with twenty bars
-* colog.progress(20, 5) to draw progress bar with 5 filled bars and 15 "empty" bars
-* colog.progress(20, 5, ['bgGreen']) to draw progress bar with 5 filled bars and 15 "empty" bars and green background
-* colog.progress() to increase bar value so if you have 5 out of 20, you will have 6 out of 20
-* colog.progress(undefined, undefined, [ 'red' ]) to increase value by 1 and add change text to red
-* colog.configureProgress() to change way progress bar is displayed
-* colog.nl() or colog.newLine() is added. This print new line in console
-* colog.progress() return array with 2 elements, current and max value of progress
-
-
-##v0.1.4
-
-*Changes:*
-Now you can use color names without color prefix. So use
-* colog.red() instead of colog.colorRed()
-* colog.bgGreen() instead of colog.backgroundGreen();
-* colog.b() instead of colog.bold()
-
-Same with format() method:
-```Shell
-Instead of <colorGreen>This</colorGreen> <bold>is</bold> <backgroundRed>SPARTA!</backgroundRed>
-use <green>This</green> <b>is</b> <bgRed>SPARTA!</bgRed>
-```
-
-
-##v0.1.3
-
-Use colors in your node.js console output
-
 ###Installation
 
 If you have Node.js and npm (Node Package Manager) installed, simply open console and type
@@ -131,7 +34,7 @@ You should see green text "Up and running";
 
 For more informations check [Wiki](https://github.com/dariuszp/colog/wiki) page for this project
 
-##Chatsheet
+##Cheatsheet
 
 ####Predefined options:
 
@@ -160,27 +63,41 @@ colog.log(colog.colorGreen('My text'));
 colog.log(colog.backgroundGreen('My text'));
 ```
 
-*Available options:*
+*Available effects:*
 * bold()
 * underline()
 * strike() (draw line on the text)
 * inverse() (change background color with text color and vice versa)
-* colorBlack()
-* colorRed()
-* colorGreen()
-* colorYellow()
-* colorBlue()
-* colorMagenta()
-* colorCyan()
-* colorWhite()
-* backgroundBlack()
-* backgroundRed()
-* backgroundGreen()
-* backgroundYellow()
-* backgroundBlue()
-* backgroundMagenta()
-* backgroundCyan()
-* backgroundWhite()
+
+Also you can use .b(), .u(), .s() and .i() etc.
+
+*Available colors:*
+* black()
+* red()
+* green()
+* yellow()
+* blue()
+* magenta()
+* cyan()
+* white()
+
+Also you can use .colorBlack() instead of .black()
+
+*Available backgrounds:*
+* bgBlack()
+* bgRed()
+* bgGreen()
+* bgYellow()
+* bgBlue()
+* bgMagenta()
+* bgCyan()
+* bgWhite()
+
+Also you can use for example backgroundRed() instead of bgRed()
+
+*Others:*
+
+.nl() is alias for .newLine(). You get the point.
 
 ####Combining multiple effects:
 
@@ -189,12 +106,68 @@ colog.log(colog.underscore(colog.colorRed('My text')));
 colog.log(colog.apply('My text', ['underscore', 'colorRed']));
 colog.log(colog.color('My text', 'red') + colog.color('My text', 'green'));
 colog.format('<question>How are you ?</question>');
-colog.format('colog.format(<bold><colorRed>This</colorRed></bold> <underline><colorYellow>is</colorYellow></underline> <colorGreen>SPARTA</colorGreen><inverse>!</inverse>);');
+colog.format('colog.format(<bold><colorRed>This</colorRed></bold> <underline><yellow>is</yellow></underline> <green>SPARTA</green><inverse>!</inverse>);');
 colog.log(colog.format('<question>How are you ?</question>', false));
 ```
 
 *All options that can be used as tags:*
 bold, underline, strike, inverse, colorBlack, colorRed, colorGreen, colorYellow, colorBlue, colorMagenta, colorCyan, colorWhite, backgroundBlack, backgroundRed, backgroundGreen, backgroundYellow, backgroundBlue, backgroundMagenta, backgroundCyan, backgroundWhite
+
+*Also:*
+now you can use short names like "black", "bgGreen" etc. Same as methods listed above
+
+## Progress bar
+
+To init a progress bar with 1000 steps that is charged 50% (5000 steps) just use:
+
+```JavaScript
+colog.progress(5000, 10000);
+```
+
+Now you can advance progress bar by .progress() method with one or no arguments:
+
+```JavaScript
+colog.progress(); // will add one step to progress bar
+colog.progress(5); // will add 5 steps
+```
+
+## Formating output
+
+Now .format() method allow You to combine string with arguments just like .format() method from Node.js Util library
+
+```JavaScript
+colog.format('My name is %s and I\'m %d', 'Earl', 45);
+```
+
+## Status
+
+Sometimes you want some description with status. This will print message on the left side of the screen and status on the right side.
+Script will measure size of your terminal and match position of both strings.
+
+```JavaScript
+colog.status('Module message', '[OK]');
+colog.status('Module <b>message</b>', '<b>[OK]</b>');
+```
+
+If script will be unable to check size of TTY, default cols will be used.
+
+## Silent mode
+
+Sometimes you want Your colog to just shut up. You can do that using silent mode:
+
+```JavaScript
+colog.silent(true);
+colog.silent(false);
+```
+
+## Dumping stuff
+
+You can dump variables and functions at any point and apply effects to them.
+
+```JavaScript
+colog.dump(variable);
+colog.dump(variable, ['red', 'bgGreen']);
+```
 
 ##Example output
 
