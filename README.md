@@ -13,8 +13,6 @@ npm install colog
 To use colog, add it to your project file
 
 ```JavaScript
-'use strict';
-
 var colog = require('colog');
 ```
 
