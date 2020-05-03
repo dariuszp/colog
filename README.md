@@ -1,6 +1,6 @@
-#colog [![Build Status](https://travis-ci.org/dariuszp/colog.png?branch=1.0.0)](https://travis-ci.org/dariuszp/colog)
+# colog [![Build Status](https://travis-ci.org/dariuszp/colog.png?branch=1.0.0)](https://travis-ci.org/dariuszp/colog)
 
-###Installation
+### Installation
 
 If you have Node.js and npm (Node Package Manager) installed, simply open console and type
 
@@ -8,7 +8,7 @@ If you have Node.js and npm (Node Package Manager) installed, simply open consol
 npm install colog
 ```
 
-###Usage
+### Usage
 
 To use colog, add it to your project file
 
@@ -32,9 +32,9 @@ You should see green text "Up and running";
 
 For more informations check [Wiki](https://github.com/dariuszp/colog/wiki) page for this project
 
-##Cheatsheet
+## Cheatsheet
 
-####Predefined options:
+#### Predefined options:
 
 ```JavaScript
 colog.question('How are you ?');
@@ -54,7 +54,7 @@ colog.question('How are you ?');
 * headerQuestion() - white text, cyan background
 * headerAnswer() - white text, magenta background
 
-####Applying colors, effects or background:
+#### Applying colors, effects or background:
 
 ```JavaScript
 colog.log(colog.colorGreen('My text'));
@@ -97,7 +97,7 @@ Also you can use for example backgroundRed() instead of bgRed()
 
 .nl() is alias for .newLine(). You get the point.
 
-####Combining multiple effects:
+#### Combining multiple effects:
 
 ```JavaScript
 colog.log(colog.underscore(colog.colorRed('My text')));
@@ -167,7 +167,7 @@ colog.dump(variable);
 colog.dump(variable, ['red', 'bgGreen']);
 ```
 
-##Example output
+## Example output
 
 ![Example](https://raw.github.com/dariuszp/colog/master/docs/colog.png)
 
